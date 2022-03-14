@@ -1,0 +1,33 @@
+{
+  "name": "@scratchapijs/scratchapi.js",
+  "version": "1.0.0",
+  "description": "A great Library for the Scratch API",
+  "main": "src/index.js",
+  "dependencies": {
+    "@discordjs/collection": "^0.5.0",
+    "axios": "^0.26.0",
+    "dotenv": "^16.0.0",
+    "puppeteer": "^13.5.1"
+  },
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "eslint": "^8.8.0",
+    "node": "^16.6.1"
+  },
+  "scripts": {
+    "sample_1": "node samples/sample_1.js",
+    "generate-docs": "jsdoc -c jsdoc.json",
+    "fmt": "prettier --write src/**/*.js",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScratchAPIjs/ScratchAPI.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ScratchAPIjs/ScratchAPI.js/issues"
+  },
+  "homepage": "https://github.com/ScratchAPIjs/ScratchAPI.js#readme",
+  "author": "",
+  "license": "ISC"
+}

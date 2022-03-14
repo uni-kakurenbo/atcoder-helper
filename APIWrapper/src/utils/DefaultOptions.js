@@ -1,0 +1,19 @@
+"use strict";
+
+const { Constants } = require("../configs/Constants");
+
+class DefaultOptions extends null {
+  static Client = {};
+
+  static REST = {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      "Accept-Encoding": "gzip",
+      Cookie: "",
+      // "Content-Type": "application/json",
+    },
+    timeout: Constants.API.REQUEST_TIMEOUT_MS,
+  };
+}
+
+module.exports = { DefaultOptions };

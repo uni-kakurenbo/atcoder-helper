@@ -1,0 +1,33 @@
+{
+  "name": "AtCoder-helper_DiscordBot",
+  "version": "1.0.0",
+  "description": "Bot for Discord",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "generate-docs": "npx jsdoc -c jsdoc.json"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "0.8.2",
+    "@discordjs/rest": "^0.2.0-canary.0",
+    "@replit/database": "^2.0.1",
+    "axios": "~0.24.0",
+    "csv-parse": "~4.16.3",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "~13.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "extensible-custom-error": "^0.0.7",
+    "google-auth-library": "^7.11.0",
+    "googleapis": "^92.0.0",
+    "mixwith": "^0.1.1",
+    "moment-timezone": "~0.5.34",
+    "nodemailer": "^6.7.2"
+  },
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "jsdoc": "^3.6.10",
+    "node": "^17.2.0"
+  }
+}

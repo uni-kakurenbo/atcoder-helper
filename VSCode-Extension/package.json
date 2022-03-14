@@ -1,0 +1,41 @@
+{
+  "name": "atcoder-helper_vscode-extension",
+  "version": "1.0.0",
+  "description": "A powerful extension for VS Code to make your joining AtCoder more comfortable",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uni-kakurenbo/AtCoder-Helper_VSCode-Extension.git"
+  },
+  "author": "uni_kakurenbo",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/uni-kakurenbo/AtCoder-Helper_VSCode-Extension/issues"
+  },
+  "homepage": "https://github.com/uni-kakurenbo/AtCoder-Helper_VSCode-Extension#readme",
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "activationEvents": [
+    "onCommand:extension.helloWorld",
+    "onCommand:extension.login"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "extension.login",
+        "title": "login"
+      }
+    ]
+  },
+  "dependencies": {
+    "@types/vscode": "^1.65.0"
+  }
+}
