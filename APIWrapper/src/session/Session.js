@@ -5,6 +5,7 @@ const { Routes } = require("./Addresses");
 
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const path = require("path");
 const fetch = require("node-fetch");
 
 const { AxiosAdapter } = require("./Adapter");
@@ -13,7 +14,7 @@ const { DefaultOptions, Util } = require("../utils");
 const { threadId } = require("worker_threads");
 
 class Session {
-  cookiesPath = "./src/session/cache/cookies.json";
+  cookiesPath = path.join(__dirname, "./cache/cookies.json");
   constructor(client) {
     Object.defineProperty(this, "client", { value: client });
 
