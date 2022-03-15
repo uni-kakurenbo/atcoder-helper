@@ -84,7 +84,6 @@ class Client extends BaseClient {
 
   destroy() {
     super.destroy();
-    this.messages.clear();
     this.token = this.username = null;
     this.emit(Events.DESTROYED);
   }
