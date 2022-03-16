@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/uni-kakurenbo/AtCoder-Helper_VSCode-Extension#readme",
   "engines": {
-    "vscode": "^1.32.0"
+    "vscode": "^1.65.0"
   },
   "activationEvents": [
     "onStartupFinished"
