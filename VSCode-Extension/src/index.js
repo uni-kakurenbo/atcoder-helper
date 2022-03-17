@@ -19,7 +19,7 @@ function activate(context) {
         case "connected":
           const username = await context.workspaceState.get("username");
           statusBarItem.text = "$(vm-connect) AtCoder Helper";
-          //statusBarItem.command = "extension.reconnect";
+          statusBarItem.command = "extension.reconnect";
           statusBarItem.tooltip = new vscode.MarkdownString(
             `Signed in to AtCoder as \`${username}\``
           );
