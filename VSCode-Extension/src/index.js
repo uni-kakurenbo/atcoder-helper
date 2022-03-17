@@ -19,7 +19,7 @@ function activate(context) {
         case "connected":
           const username = await context.workspaceState.get("username");
           statusBarItem.text = "$(vm-connect) AtCoder Helper";
-          statusBarItem.command = "extension.reconnect";
+          //statusBarItem.command = "extension.reconnect";
           statusBarItem.tooltip = new vscode.MarkdownString(
             `Signed in to AtCoder as \`${username}\``
           );
@@ -66,16 +66,20 @@ function activate(context) {
   })();
 
   disposable = vscode.commands.registerCommand("extension.login", () => {
-    session.signIn.call(this, {
-      location: vscode.ProgressLocation.Notification,
-      title: "Log in",
-    });
+    session.signIn.call(
+      this,
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Log in",
+      },
+      { cache: false }
+    );
   });
   context.subscriptions.push(disposable);
 
   disposable = vscode.commands.registerCommand("extension.reconnect", () => {
     session.signIn.call(this, {
-      location: vscode.ProgressLocation.Window,
+      location: vscode.ProgressLocation.Notification,
       title: "Reconnect",
     });
   });

@@ -33,6 +33,10 @@
         "title": "Login"
       },
       {
+        "command": "extension.reconnect",
+        "title": "Reconnect"
+      },
+      {
         "command": "extension.setup",
         "title": "Setup"
       },

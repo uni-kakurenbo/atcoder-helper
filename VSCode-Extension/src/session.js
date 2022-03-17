@@ -30,7 +30,7 @@ async function signIn(progressOptions, { cache = true } = {}) {
 
     if (cache) {
       if (Session.cachedSessionExists(config.username)) {
-        progress.report({ message: "Restoring a cached session..." });
+        progress.report({ message: "Restoring the cached session..." });
         try {
           await client.login(config.username, config.password);
           vscode.window.showInformationMessage("Signed in successfully.");
