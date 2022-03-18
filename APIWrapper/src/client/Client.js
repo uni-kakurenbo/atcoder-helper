@@ -9,6 +9,7 @@ const { BaseClient } = require("./BaseClient");
 const { ClientUser } = require("../structures/ClientUser");
 
 const { UserManager } = require("../managers/UserManager");
+const { ContestManager } = require("../managers/ContestManager");
 
 class Client extends BaseClient {
   constructor(options) {
@@ -37,6 +38,7 @@ class Client extends BaseClient {
     this.readyTimestamp = null;
 
     this.users = new UserManager(this);
+    this.contests = new ContestManager(this);
   }
 
   get readyAt() {

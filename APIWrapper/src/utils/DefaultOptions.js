@@ -10,7 +10,6 @@ class DefaultOptions extends null {
       "X-Requested-With": "XMLHttpRequest",
       "Accept-Encoding": "gzip",
       Cookie: "",
-      // "Content-Type": "application/json",
     },
     timeout: Constants.API.REQUEST_TIMEOUT_MS,
   };

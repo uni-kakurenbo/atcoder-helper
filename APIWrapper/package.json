@@ -15,7 +15,7 @@
     "node": "^16.6.1"
   },
   "scripts": {
-    "sample_1": "node samples/sample_1.js",
+    "sample": "node samples/call.js",
     "generate-docs": "jsdoc -c jsdoc.json",
     "fmt": "prettier --write src/**/*.js",
     "lint": "eslint src"
