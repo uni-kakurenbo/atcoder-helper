@@ -15,4 +15,4 @@ client.on("ready", async () => {
   console.log(Util.convertRatingToColorName(client.user.status.algorithm.rating));
 });
 
-client.login("uni_kakurenbo", "sdiugvsduyg");
+client.login();

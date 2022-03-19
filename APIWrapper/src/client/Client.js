@@ -18,7 +18,6 @@ class Client extends BaseClient {
     this._validateOptions();
 
     Object.defineProperties(this, {
-      token: { writable: true },
       username: { writable: true },
       password: { writable: true },
     });
@@ -84,9 +83,9 @@ class Client extends BaseClient {
     return this.session.status === Status.READY;
   }
 
-  destroy() {
-    super.destroy();
-    this.token = this.username = null;
+  async destroy() {
+    await super.destroy();
+    this.username = this.password = null;
     this.emit(Events.DESTROYED);
   }
 

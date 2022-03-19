@@ -6,8 +6,7 @@
   "dependencies": {
     "@discordjs/collection": "^0.5.0",
     "axios": "^0.26.0",
-    "dotenv": "^16.0.0",
-    "puppeteer": "^13.5.1"
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "docdash": "^1.2.0",
