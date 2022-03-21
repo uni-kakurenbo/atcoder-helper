@@ -20,7 +20,7 @@ async function setup({ suggestLogin = false, requireNwePassword } = {}) {
               location: vscode.ProgressLocation.Notification,
               title: "Log in",
             },
-            { cache: false }
+            { force: true }
           );
         }
       });
