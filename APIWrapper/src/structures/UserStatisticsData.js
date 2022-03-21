@@ -1,5 +1,4 @@
 "use strict";
-const fetch = require("node-fetch");
 const { Routes } = require("../session/Addresses");
 const { Base } = require("./Base");
 

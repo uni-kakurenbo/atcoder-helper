@@ -1,17 +1,16 @@
 "use strict";
 
-const { Error } = require("../errors");
-const { Routes } = require("./Addresses");
-
-const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
+const { JSDOM } = require("jsdom");
+const { threadId } = require("worker_threads");
+
+const { Error } = require("../errors");
+const { Routes } = require("./Addresses");
 
 const { AxiosAdapter } = require("./Adapter");
 
 const { DefaultOptions, Util } = require("../utils");
-const { threadId } = require("worker_threads");
 
 class Session {
   static cookieCache = path.join(__dirname, "./cache/cookies/");
@@ -34,19 +33,19 @@ class Session {
     this.adapter.defaults.headers.Cookie = cookie;
   }
 
-  async connect(username, password, { cache = true } = {}) {
-    console.log({ username, password });
+  async connect(username, password, { force = false } = {}) {
     const cookieFilePath = Session.#getCookieFilePath(username);
 
-    if (cache) await this.#loadCachedCookie(cookieFilePath);
+    if (!force) await this.#loadCachedCookie(cookieFilePath);
     else this.Cookie = "";
 
     if (!(await this.#isSignedIn())) {
-      console.log(await this.#isSignedIn());
       try {
         let response;
         response = await this.adapter.get(Routes.login);
-        const csrf_token = response.data.match(/var csrfToken = "(.*)"/)[1];
+        const { document } = new JSDOM(response.data).window;
+        const input = document.getElementsByName("csrf_token")[0];
+        const csrf_token = input["value"];
 
         this.Cookie = response.headers["set-cookie"];
 
@@ -72,7 +71,6 @@ class Session {
       }
     }
     if (!(await this.#isSignedIn())) throw new Error("LOGIN_REJECTED", username);
-    console.log(await this.#isSignedIn());
 
     console.setColor("blue").log("The connection is valid.");
 
@@ -113,9 +111,7 @@ class Session {
   }
 
   async #updateCachedCookie(cookieFilePath, data = this.Cookie) {
-    return fs.promises
-      .writeFile(cookieFilePath, JSON.stringify(data))
-      .catch(console.setColor("red").log);
+    return fs.promises.writeFile(cookieFilePath, JSON.stringify(data)).catch(console.setColor("red").log);
   }
   async #loadCachedCookie(cookieFilePath) {
     if (fs.existsSync(cookieFilePath)) {

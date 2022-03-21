@@ -2,7 +2,12 @@
 
 const Constants = {
   API: {
-    REQUEST_TIMEOUT_MS: 15 * 1000,
+    RequestTimeout: 15 * 1000,
+  },
+  Events: {
+    ScrapeFrequency: {
+      Contest: 60 * 1000,
+    },
   },
 };
 

@@ -1,14 +1,19 @@
 "use strict";
 
-const { Routes } = require("../session/Addresses");
 const { Base } = require("./Base");
+const { ContestProblemSampleManager } = require("../managers/ContestProblemSampleManager");
+
+const { Routes } = require("../session/Addresses");
 
 class ContestProblem extends Base {
   constructor(client, data, contest) {
     super(client);
 
     this.id = data.id;
+
     this.contest = contest;
+
+    this.samples = new ContestProblemSampleManager(this);
 
     this._patch(data);
   }

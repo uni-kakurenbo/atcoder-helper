@@ -48,9 +48,9 @@ class Client extends BaseClient {
     return this.readyTimestamp && Date.now() - this.readyTimestamp;
   }
 
-  async login(username = this.username, password = this.password, { cache } = {}) {
+  async login(username = this.username, password = this.password, { force } = {}) {
     if (!username || typeof username !== "string") throw new Error("USERNAME_INVALID");
-    await this.session.connect(username, password, { cache });
+    await this.session.connect(username, password, { force });
     await this.fetchUserStatus(username);
 
     this.user = new ClientUser(this, username, {

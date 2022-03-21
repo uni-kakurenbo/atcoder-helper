@@ -1,9 +1,9 @@
 "use strict";
 
+const { Routes } = require("../session/Addresses");
+
 const { CachedManager } = require("./CachedManager");
 const { ContestProblem } = require("../structures/ContestProblem");
-
-const { Routes } = require("../session/Addresses");
 
 class ContestProblemManager extends CachedManager {
   constructor(contest, iterable) {
@@ -12,7 +12,9 @@ class ContestProblemManager extends CachedManager {
     this.contest = contest;
   }
 
-  async fetch(problem, { cache = true, force = false } = {}) {
+  async fetch(problem, { cache = true, force = false, all = true } = {}) {
+    if (all) await this.fetchAll({ cache, force });
+
     const id = this.resolveId(problem)?.toLowerCase();
     if (!force) {
       const existing = this.cache.get(id);
@@ -21,19 +23,19 @@ class ContestProblemManager extends CachedManager {
 
     const response = await this.client.adapter.get(Routes.API.Problems.problems);
     const problems = response?.data;
-    const matched = problems.find(({ id: _id }) => _id.toLowerCase() === this.contest.id);
+    const matched = problems.find(({ id: _id }) => _id.toLowerCase() === id);
 
     if (!matched) return null;
     return this._add(matched, cache, { extras: [this.contest] });
   }
 
-  async fetchAll(cache) {
+  async fetchAll({ cache = true, force = false } = {}) {
     const response = await this.client.adapter.get(Routes.API.Problems.problems);
     const problems = response?.data;
     problems.forEach((_problem) => {
-      if (_problem.contest_id?.toLowerCase() === this.contest.id) {
-        this._add(_problem, cache, { extras: [this.contest] });
-      }
+      if (_problem.contest_id?.toLowerCase() !== this.contest.id) return;
+      if (!force && this.cache.has(_problem.id)) return;
+      this._add(_problem, cache, { extras: [this.contest] });
     });
 
     return this.cache;
