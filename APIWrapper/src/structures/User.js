@@ -1,6 +1,7 @@
 "use strict";
 
 const { UserStatisticsDataManager } = require("../managers/UserStatisticsDataManager");
+const { Routes } = require("../session/Addresses");
 const { Base } = require("./Base");
 const {
   UserAcceptedCount,
@@ -32,6 +33,9 @@ class User extends Base {
     return this;
   }
 
+  get url() {
+    return Routes.Web.user(this.username);
+  }
   async exists() {
     return this.client.users.exists(this.username);
   }

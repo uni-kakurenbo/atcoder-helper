@@ -1,144 +1,142 @@
 "use strict";
 
-const { Error } = require("../errors");
-const { Routes } = require("./Addresses");
-
-const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
+const { JSDOM } = require("jsdom");
+const { threadId } = require("worker_threads");
+
+const { Error } = require("../errors");
+const { Routes } = require("./Addresses");
 
 const { AxiosAdapter } = require("./Adapter");
 
 const { DefaultOptions, Util } = require("../utils");
-const { threadId } = require("worker_threads");
 
 class Session {
   static cookieCache = path.join(__dirname, "./cache/cookies/");
   constructor(client) {
     Object.defineProperty(this, "client", { value: client });
 
+    /*
     Object.defineProperties(this, {
       id: { writable: true },
     });
-    this.id = null;
+    this.id = null;*/
 
     this.adapter = new AxiosAdapter(DefaultOptions.REST);
   }
 
-  async connect(username, password, { cache } = {}) {
-    const cookieFilePath = path.join(Session.cookieCache, `${username.toLowerCase()}.json`);
+  get Cookie() {
+    return this.adapter.defaults.headers.Cookie;
+  }
+  set Cookie(cookie) {
+    this.adapter.defaults.headers.Cookie = cookie;
+  }
 
-    const { browser, page } = await this.#restoreUserLoginSession(cookieFilePath, { cache });
+  async connect(username, password, { force = false } = {}) {
+    const cookieFilePath = Session.#getCookieFilePath(username);
 
-    if (!(await this.#isSignedIn(page))) {
+    if (!force) await this.#loadCachedCookie(cookieFilePath);
+    else this.Cookie = "";
+
+    if (!(await this.#isSignedIn())) {
       try {
-        await page.type('input[name="username"]', username);
-        await page.type('input[name="password"]', password);
-        await Promise.all([
-          page.click('button[type="submit"]'),
-          page.waitForNavigation({ timeout: 5000 }),
-        ]);
-        console.setColor("green").log("Signed in successfully.");
-      } catch (e) {
-        console.setColor("yellow").log("Connection Error:");
-        throw new Error("LOGIN_REJECTED", username);
+        let response;
+        response = await this.adapter.get(Routes.login);
+        const { document } = new JSDOM(response.data).window;
+        const input = document.getElementsByName("csrf_token")[0];
+        const csrf_token = input["value"];
+
+        this.Cookie = response.headers["set-cookie"];
+
+        const params = new URLSearchParams();
+        params.append("csrf_token", csrf_token);
+        params.append("username", username);
+        params.append("password", password);
+
+        response = await this.adapter.post(Routes.login, params, {
+          maxRedirects: 0,
+          validateStatus: (status) => (status >= 200 && status < 300) || status === 302,
+        });
+
+        if (response.headers.location !== "/login") {
+          console.setColor("green").log("Signed in successfully.");
+          this.Cookie = response.headers["set-cookie"];
+        } else {
+          throw new Error("LOGIN_REJECTED", username);
+        }
+      } catch (_error) {
+        console.setColor("yellow").log("Connection Error:", _error);
+        throw new Error("MISSING_ACCESS", username);
       }
     }
-    if (!(await this.#isSignedIn(page))) throw new Error("MISSING_ACCESS", username);
+    if (!(await this.#isSignedIn())) throw new Error("LOGIN_REJECTED", username);
 
     console.setColor("blue").log("The connection is valid.");
 
-    const cookies = await page.cookies();
-    await fs.promises
-      .writeFile(cookieFilePath, JSON.stringify(cookies))
-      .catch(console.setColor("red").log);
+    await this.#updateCachedCookie(cookieFilePath);
     console.setColor("cyan").log("The session has been saved successfully.");
-
-    await browser.close();
-
-    const sessionData = cookies.find(({ name }) => name === "REVEL_SESSION");
-    this.id = sessionData.value;
-
-    //console.log(this.id);
-
-    this.adapter.defaults.headers.Cookie += `REVEL_SESSION=${this.id};`;
-    //console.log(this.adapter.defaults.headers);
 
     return;
   }
-  async destroy() {
-    const username = this.client.username ?? "";
+
+  async destroy(username = this.client.username ?? "") {
     if (!username) return;
-    const cookieFilePath = path.join(Session.cookieCache, `${username.toLowerCase()}.json`);
 
-    const { browser, page } = await this.#restoreUserLoginSession(cookieFilePath);
+    await this.#updateCachedCookie(Session.#getCookieFilePath(username), "[]");
 
-    if (await this.#isSignedIn(page)) {
-      try {
-        await page.evaluate(() => {
-          form_logout.submit();
-        });
-      } catch (e) {
-        console.setColor("yellow").log("Connection Error:");
-        throw new Error("LOGOUT_REJECTED", username);
+    if (username === this.client.username) {
+      if (await this.#isSignedIn()) {
+        this.Cookie = "";
+      } else {
+        throw new Error("NOT_LOGGED_IN", username);
       }
     }
-    browser.close();
-
-    await fs.promises.writeFile(cookieFilePath, "[]\n").catch(console.setColor("red").log);
 
     console.setColor("cyan").log("The session has been destroyed successfully.");
 
-    this.id = null;
-
     return;
+  }
+
+  async #isSignedIn() {
+    const test_url = "https://atcoder.jp/contests/abc189/submit";
+    return this.adapter
+      .get(test_url, {
+        maxRedirects: 0,
+        validateStatus: (status) => (status >= 200 && status < 300) || status === 302,
+      })
+      .then(({ status }) => {
+        return status !== 302;
+      });
+  }
+
+  async #updateCachedCookie(cookieFilePath, data = this.Cookie) {
+    return fs.promises.writeFile(cookieFilePath, JSON.stringify(data)).catch(console.setColor("red").log);
+  }
+  async #loadCachedCookie(cookieFilePath) {
+    if (fs.existsSync(cookieFilePath)) {
+      try {
+        const cookieString = await fs.promises.readFile(cookieFilePath);
+        this.Cookie = JSON.parse(cookieString.toString());
+        console.setColor("cyan").log("A cached session has been loaded.");
+      } catch (_error) {
+        console.setColor("yellow").log("Loading cached session has been rejected:", _error);
+      }
+    } else {
+      console.setColor("cyan").log("A cached session is not existed.");
+    }
+  }
+  static #getCookieFilePath(username) {
+    return path.join(Session.cookieCache, `${username.toLowerCase()}.json`);
   }
 
   static cachedSessionExists(username) {
     username ??= "";
     const cachePath = path.join(Session.cookieCache, `${username.toLowerCase()}.json`);
-    return fs.existsSync(cachePath) && fs.readFileSync(cachePath) !== "[]\n";
+    return fs.existsSync(cachePath) && JSON.parse(fs.readFileSync(cachePath))?.length > 0;
   }
   async cachedSessionExists() {
     return Session.cachedSessionExists(this.client.username);
-  }
-
-  async #isSignedIn(page) {
-    const cookies = await page.cookies();
-    const sessionData = cookies.find(({ name }) => name === "REVEL_SESSION");
-    return (await page.$("a[href*=logout]")) !== null && !!sessionData;
-  }
-  async #restoreUserLoginSession(cookieFilePath, { cache = true } = {}) {
-    const browser = await puppeteer.launch({ headless: true, defaultViewport: undefined });
-    const pages = await browser.pages();
-    let page = pages.length > 0 ? pages[0] : await browser.newPage();
-
-    browser.on("targetcreated", async () => {
-      const pages = await browser.pages();
-      if (pages.length > 1) pages.forEach((_page) => _page.close());
-      page = pages[0];
-    });
-
-    if (cache) {
-      if (fs.existsSync(cookieFilePath)) {
-        const cookieString = await fs.promises.readFile(cookieFilePath);
-        const cookieData = JSON.parse(cookieString.toString());
-        if (cookieData.length !== 0) {
-          try {
-            for (let cookie of cookieData) await page.setCookie(cookie);
-          } catch (_error) {
-            console.setColor("yellow").log("Loading cached session has been rejected:", _error);
-          }
-        }
-        console.setColor("cyan").log("A cached session has been loaded.");
-      } else {
-        console.setColor("cyan").log("A cached session is not existed.");
-      }
-    }
-
-    if (page.url() !== Routes.login) await page.goto(Routes.login);
-    return { browser, page };
   }
 }
 

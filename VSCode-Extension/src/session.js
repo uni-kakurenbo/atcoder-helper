@@ -2,13 +2,12 @@
 
 const vscode = require("vscode");
 const { Client, Session, Util } = require("../../APIWrapper/src");
-const { sleep } = require("./utils/sleep.js");
 const { requireUsername, requirePassword } = require("./setting.js");
 
 const client = new Client();
 
-async function signIn(progressOptions, { cache = true } = {}) {
-  console.log({ cache });
+async function signIn(progressOptions, { force = false } = {}) {
+  console.log({ force });
 
   const updateIdentifier = async () => {
     return {
@@ -18,17 +17,16 @@ async function signIn(progressOptions, { cache = true } = {}) {
   };
 
   await vscode.window.withProgress(progressOptions, async (progress) => {
-    progress.report({ message: `Getting previous authentication information to sign-in...` });
+    progress.report({ message: `Getting stored authentication information to sign-in...` });
     let config = await updateIdentifier();
-    console.log(config);
 
-    if (!config.username) {
-      progress.report({ message: `Please enter your username.` });
-      await requireUsername.call(this);
-      config = await updateIdentifier();
-    }
+    if (!force) {
+      if (!config.username) {
+        progress.report({ message: `Username is not saved. Please enter your username.` });
+        await requireUsername.call(this);
+        config = await updateIdentifier();
+      }
 
-    if (cache) {
       if (Session.cachedSessionExists(config.username)) {
         progress.report({ message: "Restoring the cached session..." });
         try {
@@ -57,7 +55,7 @@ async function signIn(progressOptions, { cache = true } = {}) {
     });
 
     try {
-      await client.login(config.username, config.password, { cache });
+      await client.login(config.username, config.password, { force });
       vscode.window.showInformationMessage("Signed in successfully.");
       this.statusBar.setStatus("connected");
     } catch (_error) {

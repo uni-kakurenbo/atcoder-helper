@@ -11,8 +11,20 @@ const Routes = {
     return `https://${Servers.GENERAL}/login`;
   },
   Web: {
+    get top() {
+      return `https://${Servers.GENERAL}`;
+    },
+    get home() {
+      return `https://${Servers.GENERAL}/home`;
+    },
     user(username) {
       return `https://${Servers.GENERAL}/users/${username}`;
+    },
+    contest(id) {
+      return `https://${Servers.GENERAL}/contests/${id}`;
+    },
+    problem(contestId, problemId) {
+      return `${Routes.Web.contest(contestId)}/tasks/${problemId}`;
     },
   },
   Image: {

@@ -19,8 +19,8 @@ class BaseClient extends EventEmitter {
     this.session = new Session(this);
     this.adapter = this.session.adapter;
   }
-  destroy() {
-    this.session.destroy();
+  async destroy() {
+    return this.session.destroy();
   }
 }
 

@@ -6,13 +6,15 @@ class DefaultOptions extends null {
   static Client = {};
 
   static REST = {
+    params: {
+      lang: "ja",
+    },
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       "Accept-Encoding": "gzip",
       Cookie: "",
-      // "Content-Type": "application/json",
     },
-    timeout: Constants.API.REQUEST_TIMEOUT_MS,
+    timeout: Constants.API.RequestTimeout,
   };
 }
 

@@ -5,7 +5,7 @@ const functions = require("../functions.js");
 const { Database } = require("../system");
 const { Colors } = require("../utils");
 
-const db = new Database.LocalStorage("AtCoder_username");
+const db = new Database.LocalStorage("AtCoder_Username");
 db.begin();
 
 module.exports = async function* (atcoder_username) {
@@ -27,13 +27,7 @@ module.exports = async function* (atcoder_username) {
     };
   } else {
     return {
-      embeds: [
-        functions.getEmbed(
-          Colors.WRONG_ANSWER,
-          "Invalid User",
-          "An invalid username was provided."
-        ),
-      ],
+      embeds: [functions.getEmbed(Colors.WRONG_ANSWER, "Invalid User", "An invalid username was provided.")],
     };
   }
 };

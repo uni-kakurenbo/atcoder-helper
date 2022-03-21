@@ -15,6 +15,10 @@ const Messages = {
     `Could not access the AtCoder account (${username}): An incorrect password might be provided.`,
   MISSING_ACCESS: (username) =>
     `A valid session could not be obtained for accessing the AtCoder account (${username}).`,
+  LOGIN_FILED: (username) =>
+    `Log-in to provided AtCoder account (${username}) did not complete successfully due to an unknown error.`,
+
+  NOT_LOGGED_IN: (username) => `Already be logged out from the AtCoder account (${username}).`,
 
   FETCH_REJECTED: "The fetch request was rejected.",
 

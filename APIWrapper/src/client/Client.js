@@ -9,6 +9,7 @@ const { BaseClient } = require("./BaseClient");
 const { ClientUser } = require("../structures/ClientUser");
 
 const { UserManager } = require("../managers/UserManager");
+const { ContestManager } = require("../managers/ContestManager");
 
 class Client extends BaseClient {
   constructor(options) {
@@ -17,7 +18,6 @@ class Client extends BaseClient {
     this._validateOptions();
 
     Object.defineProperties(this, {
-      token: { writable: true },
       username: { writable: true },
       password: { writable: true },
     });
@@ -37,6 +37,7 @@ class Client extends BaseClient {
     this.readyTimestamp = null;
 
     this.users = new UserManager(this);
+    this.contests = new ContestManager(this);
   }
 
   get readyAt() {
@@ -47,9 +48,9 @@ class Client extends BaseClient {
     return this.readyTimestamp && Date.now() - this.readyTimestamp;
   }
 
-  async login(username = this.username, password = this.password, { cache } = {}) {
+  async login(username = this.username, password = this.password, { force } = {}) {
     if (!username || typeof username !== "string") throw new Error("USERNAME_INVALID");
-    await this.session.connect(username, password, { cache });
+    await this.session.connect(username, password, { force });
     await this.fetchUserStatus(username);
 
     this.user = new ClientUser(this, username, {
@@ -82,9 +83,9 @@ class Client extends BaseClient {
     return this.session.status === Status.READY;
   }
 
-  destroy() {
-    super.destroy();
-    this.token = this.username = null;
+  async destroy() {
+    await super.destroy();
+    this.username = this.password = null;
     this.emit(Events.DESTROYED);
   }
 
