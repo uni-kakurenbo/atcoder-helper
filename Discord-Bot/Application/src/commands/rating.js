@@ -6,13 +6,10 @@ const { Database } = require("../system");
 const { Colors } = require("../utils");
 const Messages = require("../utils/Messages");
 
-const db = new Database.LocalStorage("AtCoder_username");
+const db = new Database.LocalStorage("AtCoder_Username");
 db.begin();
 
-module.exports.userRating = async function ({
-  username: atcoder_username,
-  reflecting = false,
-} = {}) {
+module.exports.userRating = async function ({ username: atcoder_username, reflecting = false } = {}) {
   const registeredName = (await db.get(this.from.user.id)).data.first();
   atcoder_username ??= registeredName ?? "chokudai";
 
@@ -25,31 +22,19 @@ module.exports.userRating = async function ({
     return {
       embeds: [
         functions
-          .getEmbed(
-            Util.convertRatingToColorCode(rating.algorithm.now),
-            user.username,
-            undefined,
-            true
-          )
+          .getEmbed(Util.convertRatingToColorCode(rating.algorithm.now), user.username, undefined, true)
           .addField("Algorithm", getFieldData("algorithm"), true)
           .addField("Heuristic", getFieldData("heuristic"), true),
       ],
     };
     function getFieldData(type = "algorithm") {
-      const value =
-        type === "algorithm"
-          ? `Now: \`${rating[type].now}\`\nHighest: \`${rating[type].highest}\``
-          : `\`${rating[type]}\``;
-      return user.status[type].history.cache.filter((contest) => contest.isRated).size
-        ? value
-        : `No data available`;
+      const value = type === "algorithm" ? `Now: \`${rating[type].now}\`\nHighest: \`${rating[type].highest}\`` : `\`${rating[type]}\``;
+      return user.status[type].history.cache.filter((contest) => contest.isRated).size ? value : `No data available`;
     }
     async function reflect(interaction, rating) {
       await interaction.guild.roles.fetch();
       return interaction.member.roles.add(
-        interaction.guild.roles.cache.find(
-          (_role) => _role.name === Util.convertRatingToColorName(rating.algorithm.now)
-        )
+        interaction.guild.roles.cache.find((_role) => _role.name === Util.convertRatingToColorName(rating.algorithm.now))
       );
     }
   } else {

@@ -6,7 +6,7 @@ const { Database } = require("../system");
 const { Colors } = require("../utils");
 const Messages = require("../utils/Messages");
 
-const db = new Database.LocalStorage("AtCoder_username");
+const db = new Database.LocalStorage("AtCoder_Username");
 db.begin();
 
 const types = {
@@ -28,10 +28,7 @@ module.exports = async function ({ type, username: atcoder_username } = {}) {
       embeds: [
         functions
           .getEmbed(Colors.ACCEPTED, user.username, undefined, true)
-          .addField(
-            types[type][1],
-            `Count: \`${statisticsData.count}\`\nRank: \`${statisticsData.rank}\``
-          ),
+          .addField(types[type][1], `Count: \`${statisticsData.count}\`\nRank: \`${statisticsData.rank}\``),
       ],
     };
   } else {

@@ -7,6 +7,9 @@ const { client } = require("./config.js");
 
 const { Logger, ProcessError, Database } = require("./system");
 
+const registry = new Database.SystemStorage();
+registry.begin();
+
 client.on("ready", () => {
   process.on("uncaughtException", (err, origin) => {
     console.setColor("red").log(err);
@@ -19,8 +22,6 @@ client.on("ready", () => {
   require("./test.js");
   require("./command.js");
   (async () => {
-    const registry = new Database.SystemStorage();
-    await registry.begin();
     let initialLaunch = (await registry.get("initialLaunchAt")).data.first();
     console.setColor("cyan").log(initialLaunch);
     if (!initialLaunch) {

@@ -17,9 +17,7 @@ const devtest = new SlashCommand({
 })
   .setName("devtest")
   .setDescription("The command for developers")
-  .addStringOption((_option) =>
-    _option.setName("arg1").setDescription("1st args").setRequired(true)
-  );
+  .addStringOption((_option) => _option.setName("arg1").setDescription("1st args").setRequired(true));
 commands.addCommand(devtest);
 
 commands.addCommand(
@@ -44,13 +42,22 @@ commands.addCommand(
   new SlashCommand({
     type: MessageCommand.RegistrationType.GUILD,
     guildIds: command_guildIds,
+    execute: require("./commands/contestNotification.js").register,
+  })
+    .setName("register")
+    .setDescription("Register a channel to notify contests' coming up.")
+    .addChannelOption((_option) => _option.setName("channel").setDescription("The channel to send notifications. (default: here)").setRequired(false))
+);
+
+commands.addCommand(
+  new SlashCommand({
+    type: MessageCommand.RegistrationType.GUILD,
+    guildIds: command_guildIds,
     execute: require("./commands/linkAtCoder.js"),
   })
     .setName("link")
     .setDescription("Links your account on AtCoder.")
-    .addStringOption((_option) =>
-      _option.setName("username").setDescription("Your name on AtCoder").setRequired(true)
-    )
+    .addStringOption((_option) => _option.setName("username").setDescription("Your name on AtCoder").setRequired(true))
 );
 
 commands.addCommand(
@@ -62,12 +69,8 @@ commands.addCommand(
   })
     .setName("rating")
     .setDescription("Shows the rating.")
-    .addStringOption((_option) =>
-      _option.setName("username").setDescription("username to fetch on AtCoder")
-    )
-    .addBooleanOption((_option) =>
-      _option.setName("reflecting").setDescription("Whether to reflect the rating on the role")
-    )
+    .addStringOption((_option) => _option.setName("username").setDescription("username to fetch on AtCoder"))
+    .addBooleanOption((_option) => _option.setName("reflecting").setDescription("Whether to reflect the rating on the role"))
 );
 
 commands.addCommand(
@@ -132,15 +135,9 @@ commands.addCommand(
         ])
     )
     .addBooleanOption((_option) =>
-      _option
-        .setName("accessible")
-        .setDescription(
-          "Whether to narrow down the displayed channels by permissions (Default:false)"
-        )
+      _option.setName("accessible").setDescription("Whether to narrow down the displayed channels by permissions (Default:false)")
     )
-    .addBooleanOption((_option) =>
-      _option.setName("voice").setDescription("Whether to show voice channels (Default:true)")
-    )
+    .addBooleanOption((_option) => _option.setName("voice").setDescription("Whether to show voice channels (Default:true)"))
     .addStringOption((_option) =>
       _option
         .setName("thread")
@@ -161,9 +158,7 @@ commands.addCommand(
   })
     .setName("ping")
     .setDescription("Measures the latency to and from each service.")
-    .addBooleanOption((_option) =>
-      _option.setName("details").setDescription("Whether to measure detailed information")
-    )
+    .addBooleanOption((_option) => _option.setName("details").setDescription("Whether to measure detailed information"))
 );
 
 commands.addCommand(
@@ -175,9 +170,7 @@ commands.addCommand(
   })
     .setName("math")
     .setDescription("Solves some math problems. (This command is provided by WolframAplha.)")
-    .addStringOption((_option) =>
-      _option.setName("formula").setDescription("What you want me to solve").setRequired(true)
-    )
+    .addStringOption((_option) => _option.setName("formula").setDescription("What you want me to solve").setRequired(true))
 );
 
 const translate = require("./commands/translate.js");
