@@ -1,9 +1,13 @@
 "use strict";
 
 const vscode = require("vscode");
+const { DirectoryObserver } = require("./core/DirectoryObserver.js");
 
 function activate(context) {
   this.context = context;
+
+  const directoryObserver = new DirectoryObserver(context);
+  directoryObserver.create();
 
   console.log("AtCoder Helper is now active.");
 
@@ -37,9 +41,22 @@ function activate(context) {
 
   let disposable;
 
+  // Debug Command
+  disposable = vscode.commands.registerCommand("extension.debug", () => {
+    const { client } = require("./session.js");
+    vscode.window.showInformationMessage(`Rating: ${client.user.status.algorithm.rating}`);
+  });
+  context.subscriptions.push(disposable);
+
   // Hello World
   disposable = vscode.commands.registerCommand("extension.helloWorld", () => {
     vscode.window.showInformationMessage("Hello World!");
+  });
+  context.subscriptions.push(disposable);
+
+  // register workspace
+  disposable = vscode.commands.registerCommand("extension.registerWorkspace", () => {
+    require("./setting.js").registerWorkspace.call(this);
   });
   context.subscriptions.push(disposable);
 
