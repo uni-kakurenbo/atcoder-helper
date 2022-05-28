@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 class Options extends null {
   static createDefault() {

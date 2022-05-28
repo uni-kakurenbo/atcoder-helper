@@ -7,10 +7,7 @@ class UserAlgorithmContestStatus extends UserContestStatus {
     return this.history.cache?.last()?.newRating ?? -1;
   }
   get highestRating() {
-    return this.history.cache.reduce(
-      (prev, current) => Math.max(prev, current?.newRating ?? 0),
-      -1
-    );
+    return this.history.cache.reduce((prev, current) => Math.max(prev, current?.newRating ?? 0), -1);
   }
 }
 

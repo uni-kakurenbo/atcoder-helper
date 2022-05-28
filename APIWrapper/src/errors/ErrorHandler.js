@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const code = Symbol('code');
+const code = Symbol("code");
 const messages = new Map();
 
 function makeError(Base) {
@@ -22,17 +22,17 @@ function makeError(Base) {
 }
 
 function message(key, args) {
-  if (typeof key !== 'string') throw new Error('Error message key must be a string');
+  if (typeof key !== "string") throw new Error("Error message key must be a string");
   const message = messages.get(key);
   if (!message) return; //throw new Error(`An invalid error message key was used: ${key}.`);
-  if (typeof message === 'function') return message(...args);
+  if (typeof message === "function") return message(...args);
   if (!args?.length) return message;
   args.unshift(message);
   return String(...args);
 }
 
 function register(symbol, value) {
-  messages.set(symbol, typeof value === 'function' ? value : String(value));
+  messages.set(symbol, typeof value === "function" ? value : String(value));
 }
 
 module.exports = {

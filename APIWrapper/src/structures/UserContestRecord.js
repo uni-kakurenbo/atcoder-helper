@@ -24,7 +24,7 @@ class UserContestRecord extends Base {
     assign(["innerPerformance", "InnerPerformance"]);
     assign(["name", "ContestName"]);
     assign(["name_en", "ContestNameEn"]);
-    assign(["endedAt", "EndTime"]);
+    assign(["endedAt", "EndTime"], new Date(data.EndTime));
 
     return this;
   }
