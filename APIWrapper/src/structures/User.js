@@ -3,7 +3,7 @@
 const { UserStatisticsDataManager } = require("../managers/UserStatisticsDataManager");
 const { Routes } = require("../session/Addresses");
 const { Base } = require("./Base");
-const { UserAcceptedCount, UserRatedPointSum, UserLongestStreakCount } = require("./userStatisticsCounters");
+const { UserAcceptedCount, UserRatedPointSum, UserLongestStreakCount } = require("./UserStatisticsCounters");
 const { UserStatus } = require("./UserStatus");
 
 class User extends Base {
