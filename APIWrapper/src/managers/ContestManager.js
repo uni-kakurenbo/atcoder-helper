@@ -8,43 +8,29 @@ const { CachedManager } = require("./CachedManager");
 const { Contest } = require("../structures/Contest");
 
 const { ContestEventProvider } = require("../events/ContestEventProvider");
+const { ContestDataResolver } = require("../resolvers/ContestDataResolver");
 
 class ContestManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Contest, iterable);
 
     this.events = new ContestEventProvider(this);
+    this.resolver = new ContestDataResolver(this.client);
   }
 
   async fetch(contest, { cache = true, force = false, all = true } = {}) {
-    if (all) await this.fetchAll();
-
     const id = this.resolveId(contest)?.toLowerCase();
+
     if (!force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    const response = await this.client.adapter.get(Routes.API.Problems.contests);
-    const contests = response?.data;
-    const matched = contests.find(({ id: _id }) => _id?.toLowerCase() === id);
-
-    if (!matched) return null;
-    return this._add(matched, cache);
-  }
-
-  async fetchAll({ cache = true, force = false } = {}) {
-    const response = await this.client.adapter.get(Routes.API.Problems.contests);
-    const contests = response?.data;
-    contests?.forEach((_contest) => {
-      if (!force && this.cache.has(_contest.id)) return;
-      this._add(_contest, cache);
-    });
-    return this.cache;
+    return this._add(await this.resolver.fromId(id, { cache: all, force }), cache);
   }
 
   async fetchScheduled({ cache = true, force = false } = {}) {
-    const response = await this.client.adapter.get(Routes.Web.home);
+    const response = await this.client.gateway.get(Routes.Web.home);
     const {
       window: { document },
     } = new JSDOM(response.data);
@@ -66,7 +52,7 @@ class ContestManager extends CachedManager {
   }
 
   async exists(id) {
-    const userPageResponse = await this.client.adapter.get(Routes.Web.contest(id));
+    const userPageResponse = await this.client.gateway.get(Routes.Web.contest(id));
 
     return userPageResponse?.response?.status !== 404;
   }

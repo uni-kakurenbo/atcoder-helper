@@ -21,7 +21,7 @@ class UserManager extends CachedManager {
   }
 
   async exists(username) {
-    const userPageResponse = await this.client.adapter.get(Routes.Web.user(username));
+    const userPageResponse = await this.client.gateway.get(Routes.Web.user(username));
     return userPageResponse?.response?.status !== 404;
   }
 

@@ -25,7 +25,7 @@ class UserStatisticsData extends Base {
   }
 
   async fetch() {
-    const response = await this.client.adapter.get(this.url, {
+    const response = await this.client.gateway.get(this.url, {
       params: { user: this.user.username },
     });
     return this._patch(response.data);

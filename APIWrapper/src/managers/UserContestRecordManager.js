@@ -18,7 +18,7 @@ class UserContestRecordManager extends CachedManager {
       if (existing) return existing;
     }
 
-    const response = await this.client.adapter.get(Routes.API.Problems.contests);
+    const response = await this.client.gateway.get(Routes.API.Problems.contests);
 
     return this._add(
       response.data.find((_contest) => _contest.id == contestName),
