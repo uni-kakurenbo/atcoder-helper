@@ -52,7 +52,9 @@ class ContestProblemSampleManager extends CachedManager {
 
   async exists() {
     const tasks = await this.#fetchSampleCases();
-    const cases = tasks.filter((_task) => _task.querySelector("h3").textContent.includes(ContestProblemSampleManager.#InputIdentifier));
+    const cases = tasks.filter((_task) =>
+      _task.querySelector("h3").textContent.includes(ContestProblemSampleManager.#InputIdentifier)
+    );
     return cases.length > 0;
   }
 

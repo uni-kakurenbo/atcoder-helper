@@ -25,8 +25,16 @@
   "contributes": {
     "commands": [
       {
+        "command": "extension.debug",
+        "title": "Debug"
+      },
+      {
         "command": "extension.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "extension.registerWorkspace",
+        "title": "Register Workspace"
       },
       {
         "command": "extension.login",

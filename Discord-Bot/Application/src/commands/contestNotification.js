@@ -14,7 +14,8 @@ const db = new Database.LocalStorage("AtCoder_ContestNotification");
 
 (async () => {
   await db.begin();
-  if (await db.get("channelIds").rest) db.set("channelIds", []);
+  await db.clear();
+  if ((await db.get("channelIds")).rest) db.set("channelIds", []);
 })();
 
 module.exports.notify = async function (contest) {
@@ -30,19 +31,19 @@ module.exports.notify = async function (contest) {
   });
 };
 
-module.exports.register = async function ({ channel = this.from.channel } = {}) {
-  console.log();
+module.exports.register = async function (channel = this.from.channel) {
+  channel = await client.channels.fetch(channel?.id ?? channel);
   const channelIds = (await db.get("channelIds")).data.first();
   if (channelIds.includes(channel.id)) {
-    channel.send({
-      embeds: [Util.getEmbed(Colors.WRONG_ANSWER, `Rejected`, "The provided channel was already registered.", true)],
+    this.from.channel.send({
+      embeds: [functions.getEmbed(Colors.WRONG_ANSWER, `Rejected`, "The provided channel was already registered.", true)],
     });
   } else {
-    channelIds.push(this.from.channel);
+    channelIds.push(channel.id);
     db.set("channelIds", channelIds);
-    channel.send({
+    this.from.channel.send({
       embeds: [
-        functions.getEmbed(Colors.ACCEPTED, `Registered.`, `The notifications for the contest coming will be sent to ${channel.toString()}.`, true),
+        functions.getEmbed(Colors.ACCEPTED, `Registered`, `The notifications for the contest coming will be sent to ${channel.toString()}.`, true),
       ],
     });
   }

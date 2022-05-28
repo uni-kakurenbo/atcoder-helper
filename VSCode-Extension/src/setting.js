@@ -2,16 +2,21 @@
 
 const vscode = require("vscode");
 
+async function registerWorkspace(workspace) {
+  const workspaceSelect_quickPick = await vscode.window.showQuickPick([
+    {
+      label: `$(root-folder) aaa`,
+    },
+  ]);
+}
+
 async function setup({ suggestLogin = false, requireNwePassword } = {}) {
   await requireUsername.call(this);
   await requirePassword.call(this, requireNwePassword);
 
   if (suggestLogin) {
     await vscode.window
-      .showInformationMessage(
-        "Stored your AtCoder-account authentication information successfully.",
-        { title: "Log in" }
-      )
+      .showInformationMessage("Stored your AtCoder-account authentication information successfully.", { title: "Log in" })
       .then((_selected) => {
         if (_selected?.title === "Log in") {
           require("./session.js").signIn.call(
@@ -99,4 +104,4 @@ async function requirePassword(requireNwePassword = true) {
 
   return;
 }
-module.exports = { setup, requireUsername, requirePassword };
+module.exports = { setup, registerWorkspace, requireUsername, requirePassword };
