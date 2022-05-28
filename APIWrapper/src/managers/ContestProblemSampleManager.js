@@ -78,7 +78,7 @@ class ContestProblemSampleManager extends CachedManager {
   }
 
   async #fetchSampleCases() {
-    const response = await this.client.adapter.get(Routes.Web.problem(this.problem.contestId, this.problem.id));
+    const response = await this.client.gateway.get(Routes.Web.problem(this.problem.contestId, this.problem.id));
     const {
       window: { document },
     } = new JSDOM(response.data);

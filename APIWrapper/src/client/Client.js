@@ -67,8 +67,8 @@ class Client extends BaseClient {
 
   async fetchUserStatus(username) {
     const userHistoryURL = Routes.API.Official.userHistory(username);
-    const userAlgorithmHistoryResponse = await this.adapter.get(userHistoryURL);
-    const userHeuristicHistoryResponse = await this.adapter.get(userHistoryURL, {
+    const userAlgorithmHistoryResponse = await this.gateway.get(userHistoryURL);
+    const userHeuristicHistoryResponse = await this.gateway.get(userHistoryURL, {
       params: { contestType: "heuristic" },
     });
 

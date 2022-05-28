@@ -17,7 +17,7 @@ class BaseClient extends EventEmitter {
     this.options = Util.mergeDefault(DefaultOptions.Client, options);
 
     this.session = new Session(this);
-    this.adapter = this.session.adapter;
+    this.gateway = this.session.gateway;
   }
   async destroy() {
     return this.session.destroy();
