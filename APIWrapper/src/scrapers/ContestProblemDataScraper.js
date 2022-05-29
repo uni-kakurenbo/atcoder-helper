@@ -17,7 +17,6 @@ class ContestProblemDataScraper extends BaseScraper {
     const {
       window: { document },
     } = new JSDOM(response.data);
-    console.log(document.querySelector("span.h2").outerText);
     return {
       id,
       title: document.querySelector("span.h2").textContent.trim().replace(" - ", ". "),
