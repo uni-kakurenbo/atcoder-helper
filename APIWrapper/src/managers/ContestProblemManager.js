@@ -5,13 +5,15 @@ const { Routes } = require("../session/Addresses");
 const { CachedManager } = require("./CachedManager");
 const { ContestProblem } = require("../structures/ContestProblem");
 const { ContestProblemDataResolver } = require("../resolvers/ContestProblemDataResolver");
+const { ContestProblemDataScraper } = require("../scrapers/ContestProblemDataScraper");
 
 class ContestProblemManager extends CachedManager {
   constructor(contest, iterable) {
     super(contest.client, ContestProblem, iterable);
 
     this.contest = contest;
-    this.resolver = new ContestProblemDataResolver(this.client);
+    this.resolver = new ContestProblemDataResolver(this);
+    this.scraper = new ContestProblemDataScraper(this);
   }
 
   async fetch(problem, { cache = true, force = false, all = true } = {}) {

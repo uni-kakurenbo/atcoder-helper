@@ -25,5 +25,8 @@ const client = new Client();
   console.log(ABC_C_sampleCases.get("3").test("248860093\n"));
 
   await client.contests.fetchScheduled();
-  console.log(client.contests.cache.get("abc253").done);
+  console.log(client.contests.cache);
+  //console.log(client.contests.cache.get("abc253").done);
+
+  console.log(await client.contests.fetch("ahc011"));
 })();

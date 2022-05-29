@@ -20,7 +20,7 @@ const Routes = {
     user(username) {
       return `https://${Servers.GENERAL}/users/${username}`;
     },
-    contest(id) {
+    contest(id = "") {
       return `https://${Servers.GENERAL}/contests/${id}`;
     },
     problem(contestId, problemId) {

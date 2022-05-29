@@ -8,6 +8,7 @@ const { CachedManager } = require("./CachedManager");
 const { Contest } = require("../structures/Contest");
 
 const { ContestEventProvider } = require("../events/ContestEventProvider");
+const { ContestDataScraper } = require("../scrapers/ContestDataScraper");
 const { ContestDataResolver } = require("../resolvers/ContestDataResolver");
 
 class ContestManager extends CachedManager {
@@ -15,7 +16,8 @@ class ContestManager extends CachedManager {
     super(client, Contest, iterable);
 
     this.events = new ContestEventProvider(this);
-    this.resolver = new ContestDataResolver(this.client);
+    this.resolver = new ContestDataResolver(this);
+    this.scraper = new ContestDataScraper(this);
   }
 
   async fetch(contest, { cache = true, force = false, all = true } = {}) {
@@ -30,7 +32,7 @@ class ContestManager extends CachedManager {
   }
 
   async fetchScheduled({ cache = true, force = false } = {}) {
-    const response = await this.client.gateway.get(Routes.Web.home);
+    const response = await this.client.gateway.get(Routes.Web.contest());
     const {
       window: { document },
     } = new JSDOM(response.data);
@@ -39,10 +41,13 @@ class ContestManager extends CachedManager {
       .querySelector("tbody")
       .querySelectorAll("tr");
     recentContests.forEach((_content) => {
-      const elements = _content.querySelectorAll("a");
+      const elements = _content.querySelectorAll("td");
+      const duration = elements[2].textContent.split(":");
       const contest = {
-        id: elements[1].href.match(/contests\/(.+)/)[1],
-        title: elements[1].textContent,
+        id: elements[1].querySelector("a").href.match(/contests\/(.+)/)[1],
+        rate_change: elements[3].textContent,
+        duration_second: duration[0] * 60 * 60 + duration[1] * 60,
+        title: elements[1].querySelector("a").textContent,
         start_epoch_second: elements[0].textContent, // Date String
       };
       if (!force && this.cache.has(contest.id)) return;
