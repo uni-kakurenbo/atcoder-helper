@@ -2,7 +2,7 @@
 
 const { BaseResolver } = require("./BaseResolvers");
 
-class DataResolver extends BaseResolver {
+class RawDataResolver extends BaseResolver {
   get cache() {
     throw new Error("NOT_IMPLEMENTED", "get cache", this.constructor.name);
   }
@@ -13,4 +13,4 @@ class DataResolver extends BaseResolver {
   }
 }
 
-module.exports = { DataResolver };
+module.exports = { RawDataResolver };
