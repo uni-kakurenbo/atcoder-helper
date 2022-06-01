@@ -1,8 +1,8 @@
 "use strict";
 
-const { BaseResolver } = require("./BaseResolvers");
+const { BaseProvider } = require("./BaseProvider");
 
-class RawDataResolver extends BaseResolver {
+class RawDataProvider extends BaseProvider {
   get cache() {
     throw new Error("NOT_IMPLEMENTED", "get cache", this.constructor.name);
   }
@@ -13,4 +13,4 @@ class RawDataResolver extends BaseResolver {
   }
 }
 
-module.exports = { RawDataResolver };
+module.exports = { RawDataProvider };

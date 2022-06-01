@@ -1,8 +1,8 @@
 "use strict";
 
-const { Base } = require("./Base");
+const { AtCoderStructure } = require("./AtCoderStructure");
 
-class UserContestRecord extends Base {
+class UserContestRecord extends AtCoderStructure {
   constructor(client, data, user) {
     super(client);
 

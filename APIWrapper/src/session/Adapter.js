@@ -3,7 +3,7 @@
 const Axios = require("axios");
 const { Error } = require("../errors");
 
-class Gateway {
+class AxiosAdapter {
   constructor(config) {
     this.axios = Axios.create(config);
 
@@ -57,4 +57,4 @@ class Gateway {
   }
 }
 
-module.exports = { Gateway };
+module.exports = { AxiosAdapter };

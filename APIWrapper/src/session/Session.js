@@ -8,7 +8,7 @@ const { threadId } = require("worker_threads");
 const { Error } = require("../errors");
 const { Routes } = require("./Addresses");
 
-const { Gateway } = require("./Gateway");
+const { AxiosAdapter } = require("./Adapter");
 
 const { DefaultOptions, Util } = require("../utils");
 
@@ -23,14 +23,14 @@ class Session {
     });
     this.id = null;*/
 
-    this.gateway = new Gateway(DefaultOptions.REST);
+    this.adapter = new AxiosAdapter(DefaultOptions.REST);
   }
 
   get Cookie() {
-    return this.gateway.defaults.headers.Cookie;
+    return this.adapter.defaults.headers.Cookie;
   }
   set Cookie(cookie) {
-    this.gateway.defaults.headers.Cookie = cookie;
+    this.adapter.defaults.headers.Cookie = cookie;
   }
 
   async connect(username, password, { force = false } = {}) {
@@ -42,7 +42,7 @@ class Session {
     if (!(await this.#isSignedIn())) {
       try {
         let response;
-        response = await this.gateway.get(Routes.login);
+        response = await this.adapter.get(Routes.login);
         const { document } = new JSDOM(response.data).window;
         const input = document.getElementsByName("csrf_token")[0];
         const csrf_token = input["value"];
@@ -54,7 +54,7 @@ class Session {
         params.append("username", username);
         params.append("password", password);
 
-        response = await this.gateway.post(Routes.login, params, {
+        response = await this.adapter.post(Routes.login, params, {
           maxRedirects: 0,
           validateStatus: (status) => (status >= 200 && status < 300) || status === 302,
         });
@@ -100,7 +100,7 @@ class Session {
 
   async #isSignedIn() {
     const test_url = "https://atcoder.jp/contests/abc189/submit";
-    return this.gateway
+    return this.adapter
       .get(test_url, {
         maxRedirects: 0,
         validateStatus: (status) => (status >= 200 && status < 300) || status === 302,

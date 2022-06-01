@@ -4,7 +4,7 @@ const { Routes } = require("../session/Addresses");
 
 const { CachedManager } = require("./CachedManager");
 const { ContestProblem } = require("../structures/ContestProblem");
-const { ContestProblemDataResolver } = require("../resolvers/ContestProblemDataResolver");
+const { RawContestProblemDataProvider } = require("../providers/RawContestProblemDataProvider");
 const { ContestProblemDataScraper } = require("../scrapers/ContestProblemDataScraper");
 
 class ContestProblemManager extends CachedManager {
@@ -12,22 +12,23 @@ class ContestProblemManager extends CachedManager {
     super(contest.client, ContestProblem, iterable);
 
     this.contest = contest;
-    this.resolver = new ContestProblemDataResolver(this);
+    this.provider = new RawContestProblemDataProvider(this);
     this.scraper = new ContestProblemDataScraper(this);
   }
 
   async fetch(problem, { cache = true, force = false, all = true } = {}) {
-    const id = this.resolveId(problem)?.toLowerCase();
+    const id = this.resolver.resolveId(problem)?.toLowerCase();
+
     if (!force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    return this._add(await this.resolver.fromId(id, { cache: all, force }), cache, { extras: [this.contest] });
+    return this._add(await this.provider.fromId(id, { cache, force, all }), cache, { extras: [this.contest] });
   }
 
   async exists(id) {
-    const userPageResponse = await this.client.gateway.get(Routes.Web.problem(id));
+    const userPageResponse = await this.client.adapter.get(Routes.Web.problem(id));
     return userPageResponse?.response?.status !== 404;
   }
 }
