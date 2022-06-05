@@ -26,6 +26,20 @@ class ContestProblemSampleManager extends CachedManager {
     return this._add(await this.provider.fromId(id, { cache, force, all }), cache, { extras: [this.problem] });
   }
 
+  async fetchAll({ cache = true, force = false } = {}) {
+    const { inputs, outputs } = await this.scraper._scrapeSampleCases();
+
+    inputs.forEach((_input) => {
+      if (!force && this.cache.has(_input.id)) return;
+      const output = outputs.find((_output) => _input.id === _output.id);
+      this._add({ id: _input.id, in: _input.value, out: output?.value ?? "" }, cache, {
+        extras: [this.problem],
+      });
+    });
+
+    return this.cache;
+  }
+
   async exists() {
     return this.scraper.exists();
   }

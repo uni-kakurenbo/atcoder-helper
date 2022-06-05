@@ -17,26 +17,12 @@ class ContestProblemSampleDataScraper extends CachedDataScraper {
     this.samples = samples;
   }
   async load(id, { cache = true } = {}) {
-    const { inputs, outputs } = await this.#scrapeSampleCases();
+    const { inputs, outputs } = await this._scrapeSampleCases();
     const matchedInput = inputs.find(({ id: _id }) => _id === id);
     const matchedOutput = outputs.find(({ id: _id }) => _id === id);
 
     if (!matchedInput || !matchedOutput) return null;
     return { id, in: matchedInput.value, out: matchedOutput.value };
-  }
-
-  async fetchAll({ cache = true, force = false } = {}) {
-    const { inputs, outputs } = await this.#scrapeSampleCases();
-
-    inputs.forEach((_input) => {
-      if (!force && this.cache.has(_input.id)) return;
-      const output = outputs.find((_output) => _input.id === _output.id);
-      this._add({ id: _input.id, in: _input.value, out: output?.value ?? "" }, cache, {
-        extras: [this.problem],
-      });
-    });
-
-    return this.cache;
   }
 
   async exists() {
@@ -47,7 +33,7 @@ class ContestProblemSampleDataScraper extends CachedDataScraper {
     return cases.length > 0;
   }
 
-  async #scrapeSampleCases() {
+  async _scrapeSampleCases() {
     const tasks = await this.#fetchSampleCases();
 
     const inputs = tasks
