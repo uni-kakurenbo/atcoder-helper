@@ -1,9 +1,6 @@
 "use strict";
 
-const { Routes } = require("../session/Addresses");
-const { Base } = require("./Base");
-
-class UserStatistics extends Base {
+class UserStatistics extends AtCoderStructure {
   constructor(user, data) {
     super(user.client);
 

@@ -12,13 +12,13 @@ class UserContestRecordManager extends CachedManager {
   }
 
   async fetch(contest, { cache = true, force = false } = {}) {
-    /*const contestName = this.resolveName(contest);
+    /*const contestName = this.resolver.resolveName(contest);
     if (!force) {
       const existing = this.cache.get(contestName);
       if (existing) return existing;
     }
 
-    const response = await this.client.gateway.get(Routes.API.Problems.contests);
+    const response = await this.client.adapter.get(Routes.API.Problems.contests);
 
     return this._add(
       response.data.find((_contest) => _contest.id == contestName),

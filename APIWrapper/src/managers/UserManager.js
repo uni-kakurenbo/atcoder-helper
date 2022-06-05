@@ -11,7 +11,7 @@ class UserManager extends CachedManager {
   }
 
   async fetch(user, { cache = true, force = false } = {}) {
-    const username = this.resolveName(user);
+    const username = this.resolver.resolveName(user);
     if (!force) {
       const existing = this.cache.get(username);
       if (existing) return existing;
@@ -21,7 +21,7 @@ class UserManager extends CachedManager {
   }
 
   async exists(username) {
-    const userPageResponse = await this.client.gateway.get(Routes.Web.user(username));
+    const userPageResponse = await this.client.adapter.get(Routes.Web.user(username));
     return userPageResponse?.response?.status !== 404;
   }
 

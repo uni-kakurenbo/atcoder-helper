@@ -1,9 +1,9 @@
 "use strict";
 
-class BaseResolver {
+class BaseProvider {
   constructor(client) {
     Object.defineProperty(this, "client", { value: client });
   }
 }
 
-module.exports = { BaseResolver };
+module.exports = { BaseProvider };

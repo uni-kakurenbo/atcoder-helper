@@ -7,32 +7,32 @@ const { Routes } = require("../session/Addresses");
 const { CachedManager } = require("./CachedManager");
 const { Contest } = require("../structures/Contest");
 
-const { ContestEventProvider } = require("../events/ContestEventProvider");
+const { ContestEventPublisher } = require("../events/ContestEventPublisher");
 const { ContestDataScraper } = require("../scrapers/ContestDataScraper");
-const { ContestDataResolver } = require("../resolvers/ContestDataResolver");
+const { RawContestDataProvider } = require("../providers/RawContestDataProvider");
 
 class ContestManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Contest, iterable);
 
-    this.events = new ContestEventProvider(this);
-    this.resolver = new ContestDataResolver(this);
+    this.events = new ContestEventPublisher(this);
+    this.provider = new RawContestDataProvider(this);
     this.scraper = new ContestDataScraper(this);
   }
 
   async fetch(contest, { cache = true, force = false, all = true } = {}) {
-    const id = this.resolveId(contest)?.toLowerCase();
+    const id = this.resolver.resolveId(contest)?.toLowerCase();
 
     if (!force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    return this._add(await this.resolver.fromId(id, { cache: all, force }), cache);
+    return this._add(await this.provider.fromId(id, { cache, force, all }), cache);
   }
 
   async fetchScheduled({ cache = true, force = false } = {}) {
-    const response = await this.client.gateway.get(Routes.Web.contest());
+    const response = await this.client.adapter.get(Routes.Web.contest());
     const {
       window: { document },
     } = new JSDOM(response.data);
@@ -57,7 +57,7 @@ class ContestManager extends CachedManager {
   }
 
   async exists(id) {
-    const userPageResponse = await this.client.gateway.get(Routes.Web.contest(id));
+    const userPageResponse = await this.client.adapter.get(Routes.Web.contest(id));
 
     return userPageResponse?.response?.status !== 404;
   }

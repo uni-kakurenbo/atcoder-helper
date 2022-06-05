@@ -4,11 +4,9 @@ const { DataManager } = require("./DataManager");
 const { Cache } = require("../Cache");
 
 class CachedManager extends DataManager {
+  #cache = new Cache();
   constructor(client, holds, items) {
     super(client, holds);
-
-    Object.defineProperty(this, "_cache", { value: new Cache() });
-
     if (items) {
       for (const item of items) {
         this._add(item);
@@ -17,7 +15,7 @@ class CachedManager extends DataManager {
   }
 
   get cache() {
-    return this._cache;
+    return this.#cache;
   }
 
   _add(data, cache = true, { id, extras = [] } = {}) {

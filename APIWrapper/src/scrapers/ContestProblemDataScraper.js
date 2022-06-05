@@ -1,22 +1,26 @@
 "use strict";
 
-const { BaseScraper } = require("./BaseScraper");
+const { CachedDataScraper } = require("./CachedScraper");
 
 const { JSDOM } = require("jsdom");
 const { Routes } = require("../session/Addresses");
 
-class ContestProblemDataScraper extends BaseScraper {
+class ContestProblemDataScraper extends CachedDataScraper {
   constructor(problems) {
     super(problems.client);
 
     this.problems = problems;
   }
-  async fromId(id) {
+  async load(id, options) {
     const contestId = this.problems.contest.id;
-    const response = await this.client.gateway.get(Routes.Web.problem(contestId, id));
+    const url = Routes.Web.problem(contestId, id);
+
+    let response = await this._fetch(url, options);
+
     const {
       window: { document },
-    } = new JSDOM(response.data);
+    } = new JSDOM(response);
+
     return {
       id,
       title: document.querySelector("span.h2").textContent.trim().replace(" - ", ". "),

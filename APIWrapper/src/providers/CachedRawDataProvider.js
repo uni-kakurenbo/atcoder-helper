@@ -1,8 +1,8 @@
 "use strict";
 
-const { RawDataResolver } = require("./RawDataResolver");
+const { RawDataProvider } = require("./RawDataProvider");
 
-class CachedDataResolver extends RawDataResolver {
+class CachedRawDataProvider extends RawDataProvider {
   #cache = [];
   constructor(client) {
     super(client);
@@ -20,4 +20,4 @@ class CachedDataResolver extends RawDataResolver {
   }
 }
 
-module.exports = { CachedDataResolver };
+module.exports = { CachedRawDataProvider };

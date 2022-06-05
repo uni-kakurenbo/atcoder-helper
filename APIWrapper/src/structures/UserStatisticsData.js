@@ -1,8 +1,10 @@
 "use strict";
-const { Routes } = require("../session/Addresses");
-const { Base } = require("./Base");
 
-class UserStatisticsData extends Base {
+const { AtCoderStructure } = require("./AtCoderStructure");
+
+const { Routes } = require("../session/Addresses");
+
+class UserStatisticsData extends AtCoderStructure {
   static BaseRoute = Routes.API.Problems.Statics;
   constructor(client, data, user) {
     super(client);
@@ -25,7 +27,7 @@ class UserStatisticsData extends Base {
   }
 
   async fetch() {
-    const response = await this.client.gateway.get(this.url, {
+    const response = await this.client.adapter.get(this.url, {
       params: { user: this.user.username },
     });
     return this._patch(response.data);
