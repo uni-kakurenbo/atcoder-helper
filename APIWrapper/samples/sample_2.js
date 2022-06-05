@@ -35,4 +35,9 @@ const client = new Client();
   console.log(await client.contests.fetch("ahc011"));
   // console.log(client.contests.scraper.cache);
   console.log(await client.contests.fetch("ahc011"));
+
+  const ABC254 = await client.contests.fetch("abc254");
+  const ABC254_C = await ABC254.problems.fetch("abc254_c");
+  await ABC254_C.samples.fetchAll();
+  console.log(ABC254_C.samples.cache);
 })();
