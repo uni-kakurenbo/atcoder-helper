@@ -38,6 +38,7 @@ class CachedDataScraper extends DataScraper {
   _add(response, cache = true, { url } = {}) {
     const resolvedUrl = this.resolver.resolveUrl(response, url);
 
+    /*
     const existing = this.cache.get(resolvedUrl);
     if (existing) {
       if (cache) {
@@ -48,6 +49,7 @@ class CachedDataScraper extends DataScraper {
       clone._patch(response.data);
       return clone;
     }
+    */
 
     const entry = new HttpResponseBody(resolvedUrl, response.data);
 
