@@ -9,7 +9,8 @@ class DataManager extends BaseManager {
     super(client);
 
     Object.defineProperty(this, "holds", { value: holds });
-    this.resolver = new BaseResolver(this.holds);
+
+    this.resolver = new BaseResolver(this.holds, this);
   }
 
   get cache() {

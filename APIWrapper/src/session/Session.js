@@ -15,13 +15,11 @@ const { DefaultOptions, Util } = require("../utils");
 class Session {
   static cookieCache = path.join(__dirname, "./cache/cookies/");
   constructor(client) {
-    Object.defineProperty(this, "client", { value: client });
-
-    /*
     Object.defineProperties(this, {
-      id: { writable: true },
+      client: { value: client },
+      token: { writable: true },
     });
-    this.id = null;*/
+    this.token = null;
 
     this.adapter = new AxiosAdapter(DefaultOptions.REST);
   }
@@ -48,6 +46,7 @@ class Session {
         const csrf_token = input["value"];
 
         this.Cookie = response.headers["set-cookie"];
+        this.token = csrf_token;
 
         const params = new URLSearchParams();
         params.append("csrf_token", csrf_token);
@@ -73,7 +72,6 @@ class Session {
     if (!(await this.#isSignedIn())) throw new Error("LOGIN_REJECTED", username);
 
     console.setColor("blue").log("The connection is valid.");
-
     await this.#updateCachedCookie(cookieFilePath);
     console.setColor("cyan").log("The session has been saved successfully.");
 
@@ -83,11 +81,12 @@ class Session {
   async destroy(username = this.client.username ?? "") {
     if (!username) return;
 
-    await this.#updateCachedCookie(Session.#getCookieFilePath(username), "[]");
+    await this.#updateCachedCookie(Session.#getCookieFilePath(username), "{Cookie:[], token:null}");
 
     if (username === this.client.username) {
       if (await this.#isSignedIn()) {
         this.Cookie = "";
+        this.token = null;
       } else {
         throw new Error("NOT_LOGGED_IN", username);
       }
@@ -110,14 +109,16 @@ class Session {
       });
   }
 
-  async #updateCachedCookie(cookieFilePath, data = this.Cookie) {
+  async #updateCachedCookie(cookieFilePath, data = { Cookie: this.Cookie, token: this.token }) {
     return fs.promises.writeFile(cookieFilePath, JSON.stringify(data)).catch(console.setColor("red").log);
   }
   async #loadCachedCookie(cookieFilePath) {
     if (fs.existsSync(cookieFilePath)) {
       try {
         const cookieString = await fs.promises.readFile(cookieFilePath);
-        this.Cookie = JSON.parse(cookieString.toString());
+        const { Cookie, token } = JSON.parse(cookieString.toString());
+        this.Cookie = Cookie;
+        this.token = token;
         console.setColor("cyan").log("A cached session has been loaded.");
       } catch (_error) {
         console.setColor("yellow").log("Loading cached session has been rejected:", _error);

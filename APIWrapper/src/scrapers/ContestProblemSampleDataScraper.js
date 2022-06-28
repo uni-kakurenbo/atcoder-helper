@@ -64,7 +64,7 @@ class ContestProblemSampleDataScraper extends CachedDataScraper {
       window: { document },
     } = new JSDOM(response);
 
-    const sections = document.querySelector("#task-statement").querySelectorAll("section");
+    const sections = document.querySelectorAll("#task-statement section");
     const tasks = [].map.call(sections, (_element) => _element);
 
     return tasks;

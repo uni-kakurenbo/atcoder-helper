@@ -3,6 +3,7 @@
 const { AtCoderStructure } = require("./AtCoderStructure");
 
 const { ContestProblemSampleManager } = require("../managers/ContestProblemSampleManager");
+const { ContestProblemSubmitter } = require("../submitters/ContestProblemSubmitter");
 
 const { Routes } = require("../session/Addresses");
 
@@ -15,6 +16,7 @@ class ContestProblem extends AtCoderStructure {
     this.contest = contest;
 
     this.samples = new ContestProblemSampleManager(this);
+    this.submitter = new ContestProblemSubmitter(this);
 
     this._patch(data);
   }
@@ -30,6 +32,10 @@ class ContestProblem extends AtCoderStructure {
 
   fetch(force = true) {
     return this.contest.problems.fetch(this.id, { force });
+  }
+
+  async submit(...options) {
+    return this.submitter.submit(...options);
   }
 
   get url() {

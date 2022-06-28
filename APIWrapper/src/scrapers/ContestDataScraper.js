@@ -22,7 +22,7 @@ class ContestDataScraper extends CachedDataScraper {
       window: { document },
     } = new JSDOM(response);
 
-    const times = document.querySelector(".contest-duration").querySelectorAll("time");
+    const times = document.querySelectorAll(".contest-duration time");
     return {
       id,
       rate_change: document.querySelectorAll("span.mr-2")[1].textContent.replace("Rated対象: ", ""),
