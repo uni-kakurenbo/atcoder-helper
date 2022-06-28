@@ -26,6 +26,9 @@ const Routes = {
     problem(contestId, problemId) {
       return `${Routes.Web.contest(contestId)}/tasks/${problemId}`;
     },
+    submit(contestId) {
+      return `${Routes.Web.contest(contestId)}/submit`;
+    },
   },
   Image: {
     user(hash) {

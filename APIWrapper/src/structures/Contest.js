@@ -3,8 +3,10 @@
 const { AtCoderStructure } = require("./AtCoderStructure");
 
 const { ContestProblemManager } = require("../managers/ContestProblemManager");
+const { ContestSubmitter } = require("../submitters/ContestSubmitter");
 
 const { Routes } = require("../session/Addresses");
+const { ContestLanguageInformationManager } = require("../managers/ContestLanguageInformationManager");
 
 class Contest extends AtCoderStructure {
   constructor(client, data) {
@@ -13,6 +15,9 @@ class Contest extends AtCoderStructure {
     this.id = data.id?.toLowerCase();
 
     this.problems = new ContestProblemManager(this);
+
+    this.languages = new ContestLanguageInformationManager(this);
+    this.submitter = new ContestSubmitter(this);
 
     this._patch(data);
   }

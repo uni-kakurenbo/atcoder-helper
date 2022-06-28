@@ -12,6 +12,7 @@ class ContestProblemManager extends CachedManager {
     super(contest.client, ContestProblem, iterable);
 
     this.contest = contest;
+
     this.provider = new RawContestProblemDataProvider(this);
     this.scraper = new ContestProblemDataScraper(this);
   }

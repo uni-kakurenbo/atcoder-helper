@@ -36,10 +36,7 @@ class ContestManager extends CachedManager {
     const {
       window: { document },
     } = new JSDOM(response.data);
-    const recentContests = document
-      .querySelector("#contest-table-upcoming")
-      .querySelector("tbody")
-      .querySelectorAll("tr");
+    const recentContests = document.querySelectorAll("#contest-table-upcoming > tbody tr");
     recentContests.forEach((_content) => {
       const elements = _content.querySelectorAll("td");
       const duration = elements[2].textContent.split(":");
