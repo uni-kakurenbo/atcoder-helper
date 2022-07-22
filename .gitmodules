@@ -1,0 +1,9 @@
+[submodule "API-Wrapper"]
+	path = API-Wrapper
+	url = https://github.com/uni-kakurenbo/atcoder-helper--api-wrapper.git
+[submodule "Discord-Bot"]
+	path = Discord-Bot
+	url = https://github.com/uni-kakurenbo/atcoder-helper--discord-bot.git
+[submodule "VSCode-Extension"]
+	path = VSCode-Extension
+	url = https://github.com/uni-kakurenbo/atcoder-helper--vscode-extension.git

@@ -1,0 +1,30 @@
+{
+  "folders": [
+    {
+      "name": "AtCoder Helper",
+      "path": "."
+    },
+    {
+      "name": "Discord Bot",
+      "path": "Discord-Bot"
+    },
+    {
+      "name": "API Wrapper",
+      "path": "API-Wrapper"
+    },
+    {
+      "name": "VSCode Extension",
+      "path": "VSCode-Extension"
+    }
+  ],
+  "settings": {
+    "cSpell.words": [
+      "atcoder",
+      "chokudai",
+      "kenkoooo",
+      "KENKOOOOO",
+      "mixwith",
+      "targetcreated"
+    ]
+  }
+}
