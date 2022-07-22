@@ -1,13 +1,12 @@
 "use strict";
 
 const vscode = require("vscode");
-const { DirectoryObserver } = require("./core/DirectoryObserver.js");
+const application = require("./core/main.js");
 
 function activate(context) {
   this.context = context;
 
-  const directoryObserver = new DirectoryObserver(context);
-  directoryObserver.create();
+  application.standing.call(this);
 
   console.log("AtCoder Helper is now active.");
 

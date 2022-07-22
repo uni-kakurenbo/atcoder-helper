@@ -1,0 +1,24 @@
+body {
+  background: transparent;
+}
+
+.undisplayed {
+  display: none;
+}
+
+#ratingStatusWrapper,
+#ratingGraphWrapper {
+  width: 320px;
+}
+
+#acri-profile-big-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 14px;
+  left: 37px;
+}
+
+#ratingStatus {
+  margin-top: 20px;
+}

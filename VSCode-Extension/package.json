@@ -23,6 +23,49 @@
     "onStartupFinished"
   ],
   "contributes": {
+    "configuration": {
+      "title": "AtCoder-Helper",
+      "properties": {
+        "AtCoder-Helper.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to enable"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "atcoder-helper",
+          "title": "AtCoder Helper",
+          "icon": "resources/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "test": [
+        {
+          "type": "webview",
+          "id": "atcoder-sdfsdg",
+          "name": "AtCoder Today"
+        }
+      ],
+      "atcoder-helper": [
+        {
+          "id": "atcoder-helper.atcoder-status",
+          "name": "Contest Status"
+        },
+        {
+          "type": "webview",
+          "id": "atcoder-helper.atcoder-rating",
+          "name": "Rating Graph"
+        },
+        {
+          "id": "atcoder-helper.atcoder-contests",
+          "name": "Contests"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "extension.debug",

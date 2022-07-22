@@ -3,11 +3,18 @@
 const vscode = require("vscode");
 
 async function registerWorkspace(workspace) {
-  const workspaceSelect_quickPick = await vscode.window.showQuickPick([
-    {
-      label: `$(root-folder) aaa`,
-    },
-  ]);
+  if (vscode.workspace.workspaceFolders == void 0) {
+    vscode.window.showWarningMessage("No workspace is open.");
+  } else {
+    const selected = await vscode.window.showQuickPick(
+      vscode.workspace.workspaceFolders.map((workspace) => ({
+        label: `$(root-folder) ${workspace.name}`,
+        description: workspace.uri.path,
+        workspace: workspace,
+      }))
+    );
+    vscode.workspace.getConfiguration("AtCoder-Helper", selected.workspace).update("enable", true).catch(console.error);
+  }
 }
 
 async function setup({ suggestLogin = false, requireNwePassword } = {}) {
@@ -16,7 +23,9 @@ async function setup({ suggestLogin = false, requireNwePassword } = {}) {
 
   if (suggestLogin) {
     await vscode.window
-      .showInformationMessage("Stored your AtCoder-account authentication information successfully.", { title: "Log in" })
+      .showInformationMessage("Stored your AtCoder-account authentication information successfully.", {
+        title: "Log in",
+      })
       .then((_selected) => {
         if (_selected?.title === "Log in") {
           require("./session.js").signIn.call(
